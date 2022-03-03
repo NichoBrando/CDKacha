@@ -1,55 +1,45 @@
-import { Stack, StackProps, Duration, CfnOutput } from 'aws-cdk-lib';
+import { Stack, StackProps, Duration } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import * as Lambda from 'aws-cdk-lib/aws-lambda';
-import * as ApiGateway from 'aws-cdk-lib/aws-apigateway';
-import * as DynamoDB from 'aws-cdk-lib/aws-dynamodb';
+import buildDynamoTable from '../builders/buildDynamoTable';
+import buildNodeLambda from '../builders/buildNodeLambda';
+import buildRestApi from '../builders/buildRestApi';
+import buildLambdaIntegration from '../builders/buildLambdaIntegration';
 
 export class InfraStack extends Stack {
     constructor(scope: Construct, id: string, props?: StackProps) {
         super(scope, id, props);
 
-        const characterTable = new DynamoDB.Table(this, 'Characters', {
-            partitionKey: { name: 'id', type: DynamoDB.AttributeType.STRING },
-            billingMode: DynamoDB.BillingMode.PAY_PER_REQUEST,
-        });
+        const characterTable = buildDynamoTable(this, 'Characters');
 
-        const pullCharacterHandler = new Lambda.Function(this, 'pullCharacterHandler', {
-            runtime: Lambda.Runtime.NODEJS_14_X,
-            code: Lambda.Code.fromAsset('resources'),
-            handler: 'pullCharacter.main',
-            timeout: Duration.seconds(300),
-            environment: {
-                charactersTable: characterTable.tableName,
-            },
-        });
+        const generalEnvironment = {
+            charactersTable: characterTable.tableName
+        };
 
-        const listCharactersHandler = new Lambda.Function(this, 'listCharacterHandler', {
-            runtime: Lambda.Runtime.NODEJS_14_X,
-            code: Lambda.Code.fromAsset('resources'),
-            handler: 'listCharacters.main',
-            timeout: Duration.seconds(300),
-            environment: {
-                charactersTable: characterTable.tableName,
-            },
-        });
+        const pullCharacterHandler = buildNodeLambda(
+            this, {
+                name: 'pullCharacterHandler',
+                handler: 'pullCharacter.main',
+                environment: generalEnvironment
+            }
+        );
+        
+        const listCharactersHandler = buildNodeLambda(this, 
+            {
+                name: 'listCharacterHandler',
+                handler: 'listCharacters.main',
+                environment: generalEnvironment
+            }
+        );
 
         characterTable.grantWriteData(pullCharacterHandler);
         characterTable.grantReadData(listCharactersHandler);
 
-        const api = new ApiGateway.RestApi(this, 'cdkacha-api', {
-            restApiName: 'Cdkacha API',
-            description: 'Service for pull chracter and list your obtained characters',
-        });
+        const api = buildRestApi(this, 'cdkacha-api');
 
-        const pullCharacterIntegration = new ApiGateway.LambdaIntegration(pullCharacterHandler, {
-            requestTemplates: { 'application/json': '{ "statusCode": "200" }' },
-        });
+        const pullCharacterIntegration = buildLambdaIntegration(pullCharacterHandler);
+        const listCharacterIntegration = buildLambdaIntegration(listCharactersHandler);
 
-        const listCharacterIntegration = new ApiGateway.LambdaIntegration(listCharactersHandler, {
-            requestTemplates: { 'application/json': '{ "statusCode": "200" }' },
-        });
-
-        api.root.addMethod('POST', pullCharacterIntegration);
-        api.root.addMethod('GET', listCharacterIntegration);
+        api.root.addResource('pull-character').addMethod('POST', pullCharacterIntegration);
+        api.root.addResource('list-characters').addMethod('GET', listCharacterIntegration);
     }
 }
