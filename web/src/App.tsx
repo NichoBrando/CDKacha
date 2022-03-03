@@ -13,7 +13,7 @@ const unityContext = new UnityContext({
 function App() {
     const startPull = async () => {
         try {
-            const { data } = await Axios.post(process.env.REACT_APP_PULL_URL as string);
+            const { data } = await Axios.post(`${process.env.REACT_APP_BACKEND_URL}/pull-character`);
             if (data && data.name) {
                 unityContext.send('EventHandler', 'OnPullSuccess', data.name);
             } else unityContext.send('EventHandler', 'OnPullFail');
@@ -35,7 +35,7 @@ function App() {
 
     useEffect(() => {
         const loadList = async () => {
-            const { data } = await Axios.get(process.env.REACT_APP_GET_CHARACTERS_URL as string);
+            const { data } = await Axios.get(`${process.env.REACT_APP_BACKEND_URL}/list-characters`);
             console.log(data);
         };
         loadList();
