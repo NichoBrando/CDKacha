@@ -12,12 +12,13 @@ public class EventHandler : MonoBehaviour
 
     [SerializeField]
     private Text WishPointsLabel;
-    private Dictionary<string, Texture2D> characters;
+    [SerializeField]
+    private Text MessageLabel;
 
     [SerializeField]
     private List<string> characterNames;
     [SerializeField]
-    private List<Texture2D> characterPhoto;
+    private List<Texture2D> characterPhotos;
 
     private int WishPoints = 100;
     private int WishCost = 10;
@@ -26,13 +27,11 @@ public class EventHandler : MonoBehaviour
     [DllImport("__Internal")]
     private static extern void StartPullRequest();
 
-
-    private void Awake()
+    private void GetRandomCharacter()
     {
-        characters = new Dictionary<string, Texture2D>();
-        for (int i = 0; i < characterNames.Count; i++) {
-            characters.Add(characterNames[i], characterPhoto[i]);
-        };
+        UpdateBalance();
+        int characterIndex = Random.Range(0, characterNames.Count - 1);
+        StartCoroutine(ShowCharacter(characterIndex));
     }
 
     public void OnPullClick()
@@ -40,8 +39,12 @@ public class EventHandler : MonoBehaviour
         if (WishPoints - WishCost >= 0 && !IsPulling)
         {
             IsPulling = true;
-            StartPullRequest();
             WishPoints -= WishCost;
+            #if UNITY_EDITOR
+                GetRandomCharacter();
+            #else
+                StartPullRequest();
+            #endif
         }
     }
 
@@ -55,7 +58,8 @@ public class EventHandler : MonoBehaviour
     public void OnPullSuccess(string charName)
     {
         UpdateBalance();
-        StartCoroutine(ShowCharacter(charName));
+        int charIndex = characterNames.IndexOf(charName);
+        StartCoroutine(ShowCharacter(charIndex));
     }
 
     public void OnRechargeClick()
@@ -66,33 +70,25 @@ public class EventHandler : MonoBehaviour
         }
     }
 
-    private void HideBox()
-    {
-        LootBox.SetActive(false);
-    }
-
-    private void ShowBox()
-    {
-        LootBox.SetActive(true);
-    }
-
     private void UpdateBalance()
     {
         WishPointsLabel.text = $"{WishPoints}/100 Wish Points";
     }
 
-    private IEnumerator ShowCharacter(string charName)
+    private IEnumerator ShowCharacter(int charIndex)
     {
-        Texture2D value;
-        if (characters.TryGetValue(charName, out value))
+        Texture2D value = characterPhotos[charIndex];
+        if (value != null)
         {
+            MessageLabel.text = characterNames[charIndex];
             Character.GetComponent<RawImage>().texture = value;
             Character.SetActive(true);
-            HideBox();
+            LootBox.SetActive(false);
             yield return new WaitForSeconds(2f);
         }
         Character.SetActive(false);
         IsPulling = false;
-        ShowBox();
+        MessageLabel.text = "Click on the box to open";
+        LootBox.SetActive(true);
     }
 }

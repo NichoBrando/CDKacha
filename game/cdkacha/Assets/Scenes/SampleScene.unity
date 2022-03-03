@@ -152,10 +152,9 @@ RectTransform:
   m_Children:
   - {fileID: 257811440}
   - {fileID: 350921633}
-  - {fileID: 199350929}
   - {fileID: 136186292}
   m_Father: {fileID: 1529669350}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -193,7 +192,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2703072}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -381,7 +380,7 @@ GameObject:
   - component: {fileID: 199350931}
   - component: {fileID: 199350930}
   m_Layer: 5
-  m_Name: Text (1)
+  m_Name: MessageLabel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -398,8 +397,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 2703072}
-  m_RootOrder: 2
+  m_Father: {fileID: 1529669350}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -765,7 +764,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1529669350}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -839,6 +838,7 @@ MonoBehaviour:
   LootBox: {fileID: 2703071}
   Character: {fileID: 457566557}
   WishPointsLabel: {fileID: 765064283}
+  MessageLabel: {fileID: 199350930}
   characterNames:
   - Rohan, o renegado
   - "Regulus, o prod\xEDgio"
@@ -850,9 +850,9 @@ MonoBehaviour:
   - Mago de Pagos
   - Cavaleiro de Pagos
   - Aventureiro de Pagos
-  characterPhoto:
+  characterPhotos:
   - {fileID: 2800000, guid: a445c351a4963f041b4d768b5bdc2ff4, type: 3}
-  - {fileID: 2800000, guid: a73361ec2b9113f409eac8f30c96e773, type: 3}
+  - {fileID: 2800000, guid: a445c351a4963f041b4d768b5bdc2ff4, type: 3}
   - {fileID: 2800000, guid: 9958618f1f6de19408a8944c252d7b6d, type: 3}
   - {fileID: 2800000, guid: a7d3ca3e5cf0fe0469132bedcf003acf, type: 3}
   - {fileID: 2800000, guid: 41287d1907933f64b904ad501f1911d7, type: 3}
@@ -1037,7 +1037,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.83025, y: -100.3}
+  m_AnchoredPosition: {x: -0.83025, y: -92.4}
   m_SizeDelta: {x: 366.67, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &765064283
@@ -1242,6 +1242,7 @@ RectTransform:
   - {fileID: 765064282}
   - {fileID: 191892499}
   - {fileID: 231080537}
+  - {fileID: 199350929}
   - {fileID: 2703072}
   - {fileID: 457566558}
   m_Father: {fileID: 0}
