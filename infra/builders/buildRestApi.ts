@@ -6,6 +6,6 @@ const buildRestApi = (context: Stack, name: string) => {
         restApiName: 'Cdkacha API',
         description: 'Service for pull chracter and list your obtained characters',
     });
-}
+};
 
 export default buildRestApi;

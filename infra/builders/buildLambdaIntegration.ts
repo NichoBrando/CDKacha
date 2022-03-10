@@ -5,6 +5,6 @@ const buildLambdaIntegration = (lambda: IFunction) => {
     return new ApiGateway.LambdaIntegration(lambda, {
         requestTemplates: { 'application/json': '{ "statusCode": "200" }' },
     });
-}
+};
 
 export default buildLambdaIntegration;
